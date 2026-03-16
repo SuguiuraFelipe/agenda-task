@@ -2,6 +2,8 @@ package com.suguiura.Agendatask.controller;
 
 import com.suguiura.Agendatask.business.TaskService;
 import com.suguiura.Agendatask.business.dto.TaskDTO;
+import com.suguiura.Agendatask.infrastructure.enums.NotificationStatusEnum;
+import com.suguiura.Agendatask.infrastructure.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.cdi.Eager;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,5 +35,22 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskDTO>> searchTaskByEmail(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(taskService.searchTaskEmail(token));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTaskById(@RequestParam("id") String id){
+        taskService.deleteTaskById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<TaskDTO> changeStatusNotification(@RequestParam("status") NotificationStatusEnum statusEnum,
+                                                            @RequestParam("id") String id){
+        return ResponseEntity.ok(taskService.changeStatus(statusEnum, id));
+    }
+
+    @PutMapping
+    public ResponseEntity<TaskDTO> updateTask(@RequestBody TaskDTO dto, @RequestParam("id") String id){
+        return ResponseEntity.ok(taskService.updateTask(dto, id));
     }
 }
